@@ -1,0 +1,89 @@
+openapi: 3.0.0
+
+info:
+  title: IpinfoVPNChecker
+  version: 1.0.0
+
+servers:
+  - url: https://ipinfo.io
+
+paths:
+  /{ip}:
+    get:
+      operationId: CheckVPN
+      summary: Checks if an IP address is associated with a VPN using the Ipinfo API.
+      parameters:
+        - in: path
+          name: ip
+          schema:
+            type: string
+          required: true
+          description: The IP address to check.
+        - in: query
+          name: token
+          schema:
+            type: string
+            default: YOUR_API_TOKEN
+          required: true
+          description: Your Ipinfo API token.
+        - in: header
+          name: User-Agent
+          schema:
+            type: string
+            default: Default User-Agent
+          required: false
+      responses:
+        '200':
+          description: Successful response containing IP information.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ip:
+                    type: string
+                  hostname:
+                    type: string
+                  city:
+                    type: string
+                  region:
+                    type: string
+                  country:
+                    type: string
+                  loc:
+                    type: string
+                  org:
+                    type: string
+                  postal:
+                    type: string
+                  timezone:
+                    type: string
+                  privacy:
+                    type: object
+                    properties:
+                      vpn:
+                        type: boolean
+                        description: Indicates if the IP is associated with a VPN.
+                      proxy:
+                        type: boolean
+                      tor:
+                        type: boolean
+                      relay:
+                        type: boolean
+                      hosting:
+                        type: boolean
+                      service:
+                        type: string
+                        description: Name of the VPN service if available.
+        '401':
+          description: Unauthorized - Invalid API token.
+          content:
+            application/json: {}
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json: {}
+        default:
+          description: Default error response.
+          content:
+            application/json: {}
